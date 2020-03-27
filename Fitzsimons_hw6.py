@@ -106,21 +106,7 @@ def RK4(w0, z, m, w, x0, T, N):
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
     for ii in range(N):
-        xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
-        bn1 = ([[0],[math.cos(w*t[ii+1])/m]])
-        bn = ([[0],[math.cos(w*t[ii])/m]])
-        k1 = (xn + np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
-        bterm = (1/2)*(np.add(bn,bn1))
-        It2A = I + np.multiply((dt/2),A)
-        addStep = np.matmul(It2A,k1) + np.multiply(dt,bterm)
-        k2 = np.matmul(ItA,addStep)
-        addStep = np.matmul(It2A,k2) + np.multiply(dt,bterm)
-        k3 = np.matmul(ItA,addStep)
-        addStep = xn + np.multiply(dt,bn1)
-        k4 = np.matmul(ItA,addStep)
-        xn1 = xn + (1/6)*(k1 + k2 + k2 + k3 + k3 + k4)
-        xvec[0][ii+1] = (xn1[0]) 
-        xvec[1][ii+1] = (xn1[1])
+        
     for ii in range(len(xvec[0])):
         x[ii] = float(xvec[0][ii])
     return (x,t)
