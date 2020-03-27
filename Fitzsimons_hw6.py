@@ -135,8 +135,23 @@ if __name__ == '__main__':
     w = 1
     x0 = np.matrix([[0],[0]])
     T = 10
-    N = (1000)
-    [x,t] = RK4(w0,z,m,w,x0,T,N)
-    
+    N = [100, 1000, 10000, 100000, 100000]
+    FElast = [0] * 5
+    BElast = [0] * 5
+    CNlast = [0] * 5
+    for i in range(len(N)):
+        n = N[i]
+        [x,t] = FE(w0,z,m,w,x0,T,n)
+        FElast[i] = x[len(x)-1]
+        [x,t] = BE(w0,z,m,w,x0,T,n)
+        BElast[i] = x[len(x)-1]
+        [x,t] = CN(w0,z,m,w,x0,T,n)
+        CNlast[i] = x[len(x)-1]
+    print(FElast)
+    print(BElast)
+    print(CNlast)
+
+    answer = 0.5*(math.sin(10)-(10*math.exp(-10)))
+    print(answer)
             
     
