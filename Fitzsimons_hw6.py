@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 FE: Forward Euler
 """
 def FE(w0, z, m, w, x0, T, N):
-    A = np.matrix([[0,1],[(-1*(w0^2)),(-2*w0*z)]])
+    A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     xvec = [[0 for i in range(N+1)] for j in range(2)]
     t = list(range(N+1))
@@ -36,7 +36,7 @@ def FE(w0, z, m, w, x0, T, N):
 BE: Backward Euler
 """
 def BE(w0, z, m, w, x0, T, N):
-    A = np.matrix([[0,1],[(-1*(w0^2)),(-2*w0*z)]])
+    A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     tA = np.multiply(dt,A)
     I = np.matrix([[1,0],[0,1]])
@@ -63,7 +63,7 @@ def BE(w0, z, m, w, x0, T, N):
 CN: Crank-Nicolson
 """
 def CN(w0, z, m, w, x0, T, N):
-    A = np.matrix([[0,1],[(-1*(w0^2)),(-2*w0*z)]])
+    A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     tA = np.multiply((dt/2),A)
     I = np.matrix([[1,0],[0,1]])
@@ -93,7 +93,7 @@ def CN(w0, z, m, w, x0, T, N):
 RK4: fourth order Runge-Kutta
 """
 def RK4(w0, z, m, w, x0, T, N):
-    A = np.matrix([[0,1],[(-1*(w0^2)),(-2*w0*z)]])
+    A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     tA = np.multiply((dt/2),A)
     I = np.matrix([[1,0],[0,1]])
@@ -106,9 +106,8 @@ def RK4(w0, z, m, w, x0, T, N):
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
     for ii in range(N):
-        
-    for ii in range(len(xvec[0])):
-        x[ii] = float(xvec[0][ii])
+        for ii in range(len(xvec[0])):
+            x[ii] = float(xvec[0][ii])
     return (x,t)
 
 """
