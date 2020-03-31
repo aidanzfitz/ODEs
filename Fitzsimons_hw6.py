@@ -140,7 +140,7 @@ if __name__ == '__main__':
     w = 1
     x0 = np.matrix([[0],[0]])
     T = 10
-    N = [100, 1000, 10000, 100000, 100000]
+    N = [100, 1000, 10000, 100000, 1000000]
     FElast = [0] * 5
     BElast = [0] * 5
     CNlast = [0] * 5
@@ -156,9 +156,6 @@ if __name__ == '__main__':
         BElast[i] = abs(x[len(x)-1] - answer)
         [x,t] = CN(w0,z,m,w,x0,T,n)
         CNlast[i] = abs(x[len(x)-1] - answer)
-    print(FElast)
-    print(BElast)
-    print(CNlast)
 
     plt.figure()
     fig, ax = plt.subplots()
