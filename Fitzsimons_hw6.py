@@ -134,6 +134,9 @@ def RK4(w0, z, m, w, x0, T, N):
 main
 """
 if __name__ == '__main__':
+
+    # part 3: testing the methods
+    
     w0 = 1
     z = 1
     m = 1
@@ -186,5 +189,48 @@ if __name__ == '__main__':
     plt.ylabel('Error (log base 10)')
     plt.savefig('CN.png',bbox_inches = 'tight')
     plt.close()
-                    
     
+                    
+    # part 4: beats and resonance
+    w0 = 1
+    z = 0
+    m = 1
+    x0 = np.matrix([[0],[0]])
+    T = 100
+    N = 100000
+
+    # w = 0.8
+    [x8, t8] = CN(w0,z,m,0.8,x0,T,N)
+    plt.figure()
+    fig, ax = plt.subplots()
+    ax.plot(t8, x8, label = 'w = 0.8')
+    legend = ax.legend(loc = 'upper left')
+    plt.title('w = 0.8 CN estimate')
+    plt.xlabel('T')
+    plt.ylabel('X')
+    plt.savefig('omega08.png',bbox_inches = 'tight')
+    plt.close()
+
+    # w = 0.9
+    [x9, t9] = CN(w0,z,m,0.9,x0,T,N)
+    plt.figure()
+    fig, ax = plt.subplots()
+    ax.plot(t9, x9, label = 'w = 0.9')
+    legend = ax.legend(loc = 'upper left')
+    plt.title('w = 0.9 CN estimate')
+    plt.xlabel('T')
+    plt.ylabel('X')
+    plt.savefig('omega09.png',bbox_inches = 'tight')
+    plt.close()
+
+    # w = 1.0
+    [x1, t1] = CN(w0,z,m,1,x0,T,N)
+    plt.figure()
+    fig, ax = plt.subplots()
+    ax.plot(t1, x1, label = 'w = 1.0')
+    legend = ax.legend(loc = 'upper left')
+    plt.title('w = 1.0 CN estimate')
+    plt.xlabel('T')
+    plt.ylabel('X')
+    plt.savefig('omega10.png',bbox_inches = 'tight')
+    plt.close()
