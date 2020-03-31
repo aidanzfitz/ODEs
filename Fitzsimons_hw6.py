@@ -105,21 +105,21 @@ def RK4(w0, z, m, w, x0, T, N):
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
         bn = ([[0],[math.cos(w*t[ii])/m]])
-        k1 = (xn + np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
+        k1 = dt*(xn + np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
 
         #k2 add step
         addstep = xn + (k1/2)
-        k2 = (addstep + np.multiply(dt/2, np.matmul(A,addstep))
+        k2 = dt*(addstep + np.multiply(dt/2, np.matmul(A,addstep))
               + np.multiply(dt/2,bn))
 
         #k3 add step
         addstep = xn + (k2/2)
-        k3 = (addstep + np.multiply(dt/2, np.matmul(A,addstep))
+        k3 = dt*(addstep + np.multiply(dt/2, np.matmul(A,addstep))
               + np.multiply(dt/2,bn))
 
         #k4 addstep
         addstep = xn + k3
-        k4 = (addstep + np.multiply(dt, np.matmul(A,addstep))
+        k4 = dt*(addstep + np.multiply(dt, np.matmul(A,addstep))
               + np.multiply(dt,bn))
 
         xn1 = xn + (1/6)*(k1 + k2 + k2 + k3 + k3 + k4)
@@ -135,6 +135,7 @@ main
 """
 if __name__ == '__main__':
 
+    """
     # part 3: testing the methods
     
     w0 = 1
@@ -234,3 +235,24 @@ if __name__ == '__main__':
     plt.ylabel('X')
     plt.savefig('omega10.png',bbox_inches = 'tight')
     plt.close()
+
+    """
+    # part 5: frequency response function
+    w0 = 1
+    z = 0.1
+    m = 1
+    x0 = np.matrix([[0],[0]])
+    T = 100
+    N = 1000
+    w = [0] * 1000
+    disp = [0] * 1000
+    maxdisp = [0] * 1000
+    for i in range(len(w)):
+        w[i] = (i+1)*0.1
+        [x,t] = CN(w0,z,m,w[i],x0,T,N)
+        for j in range(len(x)):
+            disp[i] = abs(x[i])
+        maxdisp[i] = max(disp)
+    print(maxdisp)
+    
+    
