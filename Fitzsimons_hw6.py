@@ -105,22 +105,24 @@ def RK4(w0, z, m, w, x0, T, N):
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
         bn = ([[0],[math.cos(w*t[ii])/m]])
-        k1 = dt*(xn + np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
+        k1 = (np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
 
         #k2 add step
         addstep = xn + (k1/2)
-        k2 = dt*(addstep + np.multiply(dt/2, np.matmul(A,addstep))
-              + np.multiply(dt/2,bn))
+        bnadd = ([[0],[math.cos(w*(t[ii]+(dt/2)))/m]])
+        k2 = (np.multiply(dt, np.matmul(A,addstep))
+              + np.multiply(dt,bnadd))
 
         #k3 add step
         addstep = xn + (k2/2)
-        k3 = dt*(addstep + np.multiply(dt/2, np.matmul(A,addstep))
-              + np.multiply(dt/2,bn))
+        k3 = (np.multiply(dt, np.matmul(A,addstep))
+              + np.multiply(dt,bnadd))
 
         #k4 addstep
         addstep = xn + k3
-        k4 = dt*(addstep + np.multiply(dt, np.matmul(A,addstep))
-              + np.multiply(dt,bn))
+        bnadd = ([[0],[math.cos(w*(t[ii]+dt))/m]])
+        k4 = (np.multiply(dt, np.matmul(A,addstep))
+              + np.multiply(dt,bnadd))
 
         xn1 = xn + (1/6)*(k1 + k2 + k2 + k3 + k3 + k4)
         
@@ -135,7 +137,6 @@ main
 """
 if __name__ == '__main__':
 
-    """
     # part 3: testing the methods
     
     w0 = 1
@@ -154,12 +155,14 @@ if __name__ == '__main__':
 
     for i in range(len(N)):
         n = N[i]
-        [x,t] = FE(w0,z,m,w,x0,T,n)
-        FElast[i] = abs(x[len(x)-1] - answer)
-        [x,t] = BE(w0,z,m,w,x0,T,n)
-        BElast[i] = abs(x[len(x)-1] - answer)
-        [x,t] = CN(w0,z,m,w,x0,T,n)
-        CNlast[i] = abs(x[len(x)-1] - answer)
+        #[x,t] = FE(w0,z,m,w,x0,T,n)
+        #FElast[i] = abs(x[len(x)-1] - answer)
+        #[x,t] = BE(w0,z,m,w,x0,T,n)
+        #BElast[i] = abs(x[len(x)-1] - answer)
+        #[x,t] = CN(w0,z,m,w,x0,T,n)
+        #CNlast[i] = abs(x[len(x)-1] - answer)
+        [x,t] = RK4(w0,z,m,w,x0,T,n)
+        RKlast[i] = abs(x[len(x)-1] - answer)
 
     plt.figure()
     fig, ax = plt.subplots()
@@ -191,7 +194,19 @@ if __name__ == '__main__':
     plt.savefig('CN.png',bbox_inches = 'tight')
     plt.close()
     
-                    
+
+    plt.figure()
+    fig, ax = plt.subplots()
+    ax.plot(np.log10(N), np.log10(RKlast), label = 'Error')
+    legend = ax.legend(loc = 'upper left')
+    plt.title('Error using RK4 estimate')
+    plt.xlabel('N (log base 10)')
+    plt.ylabel('Error (log base 10)')
+    plt.savefig('RK4.png',bbox_inches = 'tight')
+    plt.close()
+
+    
+                  
     # part 4: beats and resonance
     w0 = 1
     z = 0
@@ -236,7 +251,6 @@ if __name__ == '__main__':
     plt.savefig('omega10.png',bbox_inches = 'tight')
     plt.close()
 
-    """
     # part 5: frequency response function
     w0 = 1
     z = 0.1
@@ -244,20 +258,21 @@ if __name__ == '__main__':
     x0 = np.matrix([[0],[0]])
     T = 100
     N = 1000
-    w = [0] * 1000
-    disp = [0] * 1000
-    maxdisp = [0] * 1000
+    w = [0.1 * (j+1) for j in range(100)]
+    disp = [0] * (N+1)
+    maxdisp = [0] * 100
     for i in range(len(w)):
-        w[i] = (i+1)*0.1
         [x,t] = CN(w0,z,m,w[i],x0,T,N)
         for j in range(len(x)):
-            disp[i] = abs(x[i])
+            disp[j] = abs(x[j])
         maxdisp[i] = max(disp)
     print(maxdisp)
 
     plt.figure()
     fig, ax = plt.subplots()
     ax.plot(w, maxdisp)
+    ax.set_yscale('log')
+    ax.set_xscale('log')
     legend = ax.legend(loc = 'upper left')
     plt.title('frequency response function')
     plt.xlabel('w')
