@@ -9,25 +9,32 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+# part 2: the methods
+
 """
 FE: Forward Euler
 """
 def FE(w0, z, m, w, x0, T, N):
+    #create initial setup for necessary variables
     A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     xvec = [[0 for i in range(N+1)] for j in range(2)]
     t = list(range(N+1))
     x = [0] * (N+1)
+    #fill t vector
     for i in range(N+1):
         t[i] = t[i] * dt
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
+    #main loop of steps
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
         bn = ([[0],[math.cos(w*t[ii])/m]])
+        #one step forward
         xn1 = (xn + np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
         xvec[0][ii+1] = float(xn1[0]) 
         xvec[1][ii+1] = float(xn1[1])
+    #re-process into just displacement values
     for ii in range(len(xvec[0])):
         x[ii] = float(xvec[0][ii])
     return (x,t)
@@ -36,6 +43,7 @@ def FE(w0, z, m, w, x0, T, N):
 BE: Backward Euler
 """
 def BE(w0, z, m, w, x0, T, N):
+    #create initial setup of necessary variables
     A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     tA = np.multiply(dt,A)
@@ -44,17 +52,21 @@ def BE(w0, z, m, w, x0, T, N):
     xvec = [[0 for i in range(N+1)] for j in range(2)]
     t = list(range(N+1))
     x = [0] * (N+1)
+    #filling t 
     for i in range(N+1):
         t[i] = t[i] * dt
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
+    #main loop for steps 
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
         bn1 = ([[0],[math.cos(w*t[ii+1])/m]])
         addStep = xn + np.multiply(dt,bn1)
+        #main xn+1 calculation
         xn1 = np.matmul(ItA,addStep)
         xvec[0][ii+1] = (xn1[0]) 
         xvec[1][ii+1] = (xn1[1])
+    #re-process for just displacement values
     for ii in range(len(xvec[0])):
         x[ii] = float(xvec[0][ii])
     return (x,t)
@@ -63,6 +75,7 @@ def BE(w0, z, m, w, x0, T, N):
 CN: Crank-Nicolson
 """
 def CN(w0, z, m, w, x0, T, N):
+    #create initial setup of necessary variables 
     A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     tA = np.multiply((dt/2),A)
@@ -71,10 +84,12 @@ def CN(w0, z, m, w, x0, T, N):
     xvec = [[0 for i in range(N+1)] for j in range(2)]
     t = list(range(N+1))
     x = [0] * (N+1)
+    #fill t
     for i in range(N+1):
         t[i] = t[i] * dt
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
+    #main loop for steps
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
         bn1 = ([[0],[math.cos(w*t[ii+1])/m]])
@@ -85,6 +100,7 @@ def CN(w0, z, m, w, x0, T, N):
         xn1 = np.matmul(ItA,addStep)
         xvec[0][ii+1] = (xn1[0]) 
         xvec[1][ii+1] = (xn1[1])
+    #re-processing for just displacement
     for ii in range(len(xvec[0])):
         x[ii] = float(xvec[0][ii])
     return (x,t)
@@ -93,41 +109,42 @@ def CN(w0, z, m, w, x0, T, N):
 RK4: fourth order Runge-Kutta
 """
 def RK4(w0, z, m, w, x0, T, N):
+    #create initial setup of variables
     A = np.matrix([[0,1],[(-1*(w0**2)),(-2*w0*z)]])
     dt = T/N
     xvec = [[0 for i in range(N+1)] for j in range(2)]
     t = list(range(N+1))
     x = [0] * (N+1)
+    #fill t values
     for i in range(N+1):
         t[i] = t[i] * dt
     xvec[0][0] = x0[0]
     xvec[1][0] = x0[1]
+    #main loop
     for ii in range(N):
         xn = np.matrix([[float(xvec[0][ii])],[float(xvec[1][ii])]])
+        #k1 add step 
         bn = ([[0],[math.cos(w*t[ii])/m]])
         k1 = (np.multiply(dt, np.matmul(A,xn)) + np.multiply(dt,bn))
-
         #k2 add step
         addstep = xn + (k1/2)
         bnadd = ([[0],[math.cos(w*(t[ii]+(dt/2)))/m]])
         k2 = (np.multiply(dt, np.matmul(A,addstep))
               + np.multiply(dt,bnadd))
-
         #k3 add step
         addstep = xn + (k2/2)
         k3 = (np.multiply(dt, np.matmul(A,addstep))
               + np.multiply(dt,bnadd))
-
         #k4 addstep
         addstep = xn + k3
         bnadd = ([[0],[math.cos(w*(t[ii]+dt))/m]])
         k4 = (np.multiply(dt, np.matmul(A,addstep))
               + np.multiply(dt,bnadd))
-
+        #take a weighted average
         xn1 = xn + (1/6)*(k1 + k2 + k2 + k3 + k3 + k4)
-        
         xvec[0][ii+1] = float(xn1[0]) 
         xvec[1][ii+1] = float(xn1[1])
+    #re-process just for displacement
     for ii in range(len(xvec[0])):
         x[ii] = float(xvec[0][ii])
     return (x,t)
@@ -138,7 +155,8 @@ main
 if __name__ == '__main__':
 
     # part 3: testing the methods
-    
+
+    #setting initial values for part 3
     w0 = 1
     z = 1
     m = 1
@@ -152,7 +170,7 @@ if __name__ == '__main__':
     RKlast = [0] * 5
     answer = 0.5*(math.sin(10)-(10*math.exp(-10)))
     print(answer)
-
+    #looping through calculating error for each N 
     for i in range(len(N)):
         n = N[i]
         [x,t] = FE(w0,z,m,w,x0,T,n)
@@ -164,6 +182,7 @@ if __name__ == '__main__':
         [x,t] = RK4(w0,z,m,w,x0,T,n)
         RKlast[i] = abs(x[len(x)-1] - answer)
 
+    #plotting
     plt.figure()
     fig, ax = plt.subplots()
     ax.plot(np.log10(N), np.log10(FElast), label = 'Error')
@@ -208,6 +227,8 @@ if __name__ == '__main__':
     
                   
     # part 4: beats and resonance
+
+    #setting initial values
     w0 = 1
     z = 0
     m = 1
@@ -215,7 +236,7 @@ if __name__ == '__main__':
     T = 100
     N = 100000
 
-    # w = 0.8
+    # w = 0.8 plotting
     [x8, t8] = CN(w0,z,m,0.8,x0,T,N)
     plt.figure()
     fig, ax = plt.subplots()
@@ -227,7 +248,7 @@ if __name__ == '__main__':
     plt.savefig('omega08.png',bbox_inches = 'tight')
     plt.close()
 
-    # w = 0.9
+    # w = 0.9 plotting
     [x9, t9] = CN(w0,z,m,0.9,x0,T,N)
     plt.figure()
     fig, ax = plt.subplots()
@@ -239,7 +260,7 @@ if __name__ == '__main__':
     plt.savefig('omega09.png',bbox_inches = 'tight')
     plt.close()
 
-    # w = 1.0
+    # w = 1.0 plotting
     [x1, t1] = CN(w0,z,m,1,x0,T,N)
     plt.figure()
     fig, ax = plt.subplots()
@@ -252,22 +273,28 @@ if __name__ == '__main__':
     plt.close()
 
     # part 5: frequency response function
+
+    #setting initial values
     w0 = 1
     z = 0.1
     m = 1
     x0 = np.matrix([[0],[0]])
     T = 100
     N = 1000
+    #creating shells for w and maxdisp
     w = [0.1 * (j+1) for j in range(100)]
     disp = [0] * (N+1)
     maxdisp = [0] * 100
+    #for each of the values of w
     for i in range(len(w)):
         [x,t] = CN(w0,z,m,w[i],x0,T,N)
+        #standardizing absolute value
         for j in range(len(x)):
             disp[j] = abs(x[j])
         maxdisp[i] = max(disp)
     print(maxdisp)
 
+    #plotting
     plt.figure()
     fig, ax = plt.subplots()
     ax.plot(w, maxdisp)
