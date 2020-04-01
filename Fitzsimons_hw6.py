@@ -254,5 +254,14 @@ if __name__ == '__main__':
             disp[i] = abs(x[i])
         maxdisp[i] = max(disp)
     print(maxdisp)
-    
+
+    plt.figure()
+    fig, ax = plt.subplots()
+    ax.plot(w, maxdisp)
+    legend = ax.legend(loc = 'upper left')
+    plt.title('frequency response function')
+    plt.xlabel('w')
+    plt.ylabel('max displacement')
+    plt.savefig('freqResponse.png',bbox_inches = 'tight')
+    plt.close()
     
