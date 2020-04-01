@@ -155,12 +155,12 @@ if __name__ == '__main__':
 
     for i in range(len(N)):
         n = N[i]
-        #[x,t] = FE(w0,z,m,w,x0,T,n)
-        #FElast[i] = abs(x[len(x)-1] - answer)
-        #[x,t] = BE(w0,z,m,w,x0,T,n)
-        #BElast[i] = abs(x[len(x)-1] - answer)
-        #[x,t] = CN(w0,z,m,w,x0,T,n)
-        #CNlast[i] = abs(x[len(x)-1] - answer)
+        [x,t] = FE(w0,z,m,w,x0,T,n)
+        FElast[i] = abs(x[len(x)-1] - answer)
+        [x,t] = BE(w0,z,m,w,x0,T,n)
+        BElast[i] = abs(x[len(x)-1] - answer)
+        [x,t] = CN(w0,z,m,w,x0,T,n)
+        CNlast[i] = abs(x[len(x)-1] - answer)
         [x,t] = RK4(w0,z,m,w,x0,T,n)
         RKlast[i] = abs(x[len(x)-1] - answer)
 
